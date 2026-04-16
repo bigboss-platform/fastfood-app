@@ -1,0 +1,20 @@
+import type { IMenuItem } from "../interfaces/menu-item.interface"
+import type { IMenu } from "../interfaces/menu.interface"
+
+export const EMPTY_MENU_ITEM: IMenuItem = {
+    id: "",
+    sectionId: "",
+    name: "",
+    description: "",
+    price: 0,
+    photoUrl: "",
+    sortOrder: 0,
+    isAvailable: false,
+}
+
+export const EMPTY_MENU: IMenu = {
+    id: "",
+    tenantId: "",
+    isActive: false,
+    sections: [],
+}

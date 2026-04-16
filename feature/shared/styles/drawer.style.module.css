@@ -1,0 +1,43 @@
+.drawerOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-overlay);
+    background-color: var(--color-overlay);
+    animation: fade-in var(--transition-base) ease both;
+}
+
+.drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: var(--z-drawer);
+    width: var(--drawer-width-mobile);
+    height: 100dvh;
+    background-color: var(--color-surface);
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform var(--transition-drawer);
+    display: flex;
+    flex-direction: column;
+}
+
+.drawerOpen {
+    transform: translateX(0);
+}
+
+@media (min-width: 640px) {
+    .drawer {
+        width: var(--drawer-width-desktop);
+        border-left: 1px solid var(--color-border);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .drawerOverlay {
+        animation: none;
+    }
+
+    .drawer {
+        transition: none;
+    }
+}

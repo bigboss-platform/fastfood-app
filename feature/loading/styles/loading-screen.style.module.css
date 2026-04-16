@@ -1,0 +1,34 @@
+.loadingScreen {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-loading);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-background, #1a1a2e);
+    animation: background-pulse 2s ease-in-out infinite;
+}
+
+.loadingScreenLogo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: logo-entrance var(--transition-spring) ease-out both;
+}
+
+.loadingScreenLogoText {
+    font-size: var(--font-size-5xl);
+    font-weight: var(--font-weight-black);
+    color: var(--color-primary, #e63946);
+    letter-spacing: -0.02em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .loadingScreen {
+        animation: none;
+    }
+
+    .loadingScreenLogo {
+        animation: none;
+    }
+}

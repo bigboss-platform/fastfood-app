@@ -1,0 +1,47 @@
+.menuExperience {
+    position: relative;
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    background-color: var(--color-background);
+}
+
+.menuExperienceSlider {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.scrollButton {
+    position: absolute;
+    right: var(--spacing-lg);
+    z-index: var(--z-above);
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-xl);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+    animation: bounce-indicator 1.5s ease-in-out infinite;
+}
+
+.scrollButton:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.scrollButtonUp {
+    top: var(--spacing-xl);
+}
+
+.scrollButtonDown {
+    bottom: calc(var(--spacing-xl) + var(--spacing-3xl));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .scrollButton {
+        animation: none;
+    }
+}
