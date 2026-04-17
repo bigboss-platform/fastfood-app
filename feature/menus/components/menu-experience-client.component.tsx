@@ -40,7 +40,7 @@ export function MenuExperienceClient({ items, tenantSlug: _tenantSlug }: MenuExp
 
     function handleAddToCart(menuItemId: string) {
         const menuItem = items.find((item) => item.id === menuItemId)
-        if (typeof menuItem === "undefined") return
+        if (!menuItem) return
         handleAddItem(menuItem)
     }
 

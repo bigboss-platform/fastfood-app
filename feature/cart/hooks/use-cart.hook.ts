@@ -29,7 +29,7 @@ export function useCart(): UseCartResult {
     const handleAddItem = useCallback((menuItem: IMenuItem) => {
         setCartItems((current) => {
             const existingItem = current.find((item) => item.menuItemId === menuItem.id)
-            const itemAlreadyInCart = typeof existingItem !== "undefined"
+            const itemAlreadyInCart = Boolean(existingItem)
             if (itemAlreadyInCart) {
                 return current.map((item) =>
                     item.menuItemId === menuItem.id

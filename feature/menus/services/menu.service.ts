@@ -11,8 +11,9 @@ export async function fetchMenu(tenantSlug: string): Promise<IMenu> {
         )
         if (!response.ok) return EMPTY_MENU
         const body: { data?: IMenu } = await response.json()
-        if (typeof body.data === "undefined") return EMPTY_MENU
-        return body.data
+        const menuData = body.data
+        if (!menuData) return EMPTY_MENU
+        return menuData
     } catch {
         return EMPTY_MENU
     }

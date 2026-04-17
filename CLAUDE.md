@@ -136,20 +136,42 @@ pnpm test:unit --run  # single run (no watch)
 ```
 
 ### Conditions
-Boolean conditions in JSX and `if` statements must read like English sentences — never use raw comparisons or type-guards inline. Extract to a named `const` (`is*`, `has*`, `can*`, `should*`) declared just before use.
+Boolean conditions in JSX and `if` statements must read like English sentences. Never use raw comparisons, `typeof` checks, or `!!` inline — always name the intent.
 
+Two patterns depending on the case:
+
+**1. Guard clause on a nullable value** (from `Array.find`, optional API field used after the check)
+Use `if (!localVar) return` — TypeScript narrows the type for subsequent code.
 ```ts
 // wrong
+if (typeof menuItem === "undefined") return
 if (menuItem !== undefined) { handleAddItem(menuItem) }
-{cart.itemCount > 0 && <CartBadge />}
 
 // right
-if (typeof menuItem === "undefined") return
+if (!menuItem) return
 handleAddItem(menuItem)
-
-const hasItemsInCart = cart.itemCount > 0
-{hasItemsInCart && <CartBadge />}
 ```
+
+**2. Boolean condition used in a branch or JSX**
+Extract the value first if needed, then convert with `Boolean()` to a named `const`.
+```ts
+// wrong
+{cart.itemCount > 0 && <CartBadge />}
+const itemAlreadyInCart = typeof existingItem !== "undefined"
+
+// right
+const hasItemsInCart = Boolean(cart.itemCount)
+{hasItemsInCart && <CartBadge />}
+
+const itemAlreadyInCart = Boolean(existingItem)
+
+// for API response primitives — extract first, then convert
+const accessToken = body.access_token ?? ""
+const hasAccessToken = Boolean(accessToken)
+if (!hasAccessToken) return EMPTY_AUTH_SESSION
+```
+
+Never use: `=== undefined`, `!== undefined`, `typeof x === "undefined"`, `!!x`
 
 Prefer guard clauses (early `return`) over positive-branch wrapping.
 

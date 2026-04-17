@@ -36,9 +36,11 @@ export async function verifyOtp(
         })
         if (!response.ok) return EMPTY_AUTH_SESSION
         const body: { access_token?: string; refresh_token?: string } = await response.json()
-        if (typeof body.access_token === "undefined") return EMPTY_AUTH_SESSION
+        const accessToken = body.access_token ?? ""
+        const hasAccessToken = Boolean(accessToken)
+        if (!hasAccessToken) return EMPTY_AUTH_SESSION
         return {
-            accessToken: body.access_token,
+            accessToken,
             refreshToken: body.refresh_token ?? "",
             endUserId: "",
             isAuthenticated: true,
