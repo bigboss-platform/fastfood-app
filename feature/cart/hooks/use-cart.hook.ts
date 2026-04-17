@@ -4,6 +4,7 @@ import { useState, useCallback } from "react"
 import type { ICart } from "../interfaces/cart.interface"
 import type { ICartItem } from "../interfaces/cart-item.interface"
 import { EMPTY_CART_ITEM } from "../constants/cart.constant"
+import { calculateTotals } from "../utils/calculate-totals.util"
 import type { IMenuItem } from "@/feature/menus/interfaces/menu-item.interface"
 
 interface UseCartResult {
@@ -16,16 +17,6 @@ interface UseCartResult {
     handleOpenDrawer: () => void
     handleCloseDrawer: () => void
     handleClearCart: () => void
-}
-
-function calculateTotals(items: ICartItem[], deliveryCost: number): ICart {
-    const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-    return {
-        items,
-        subtotal,
-        deliveryCost,
-        total: subtotal + deliveryCost,
-    }
 }
 
 export function useCart(): UseCartResult {
