@@ -93,6 +93,11 @@ Never return `null` or `undefined` from a service — return `EMPTY_ORDER` on fa
 - Services NEVER throw — they return `EMPTY_X` on any failure
 - No `console.log` — errors are silently handled with empty returns
 
+### Utils
+- Pure data-transformation functions (no state, no effects, no API calls) go in `feature/*/utils/{name}.util.ts`
+- Never define them inline inside a container or component file
+- Named exports only, same as the rest of `feature/`
+
 ### data-testid
 Every interactive element and major container must have `data-testid`.  
 E2E tests target these — never use class names or text content in selectors.
@@ -134,6 +139,7 @@ pnpm test:unit --run  # single run (no watch)
 - `null` as a value — use `EMPTY_X` constants
 - `any` type — type everything
 - `export default` inside `feature/`
+- Utility functions defined inline in containers or components — use `feature/*/utils/` instead
 - Inline styles — CSS Modules only
 - Comments in code
 - `console.log`
