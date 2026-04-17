@@ -13,6 +13,7 @@ export const EMPTY_CART_ITEM: ICartItem = {
 
 export const EMPTY_CART: ICart = {
     items: [],
+    itemCount: 0,
     subtotal: 0,
     deliveryCost: 0,
     total: 0,

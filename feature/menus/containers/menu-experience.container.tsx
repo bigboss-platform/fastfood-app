@@ -11,7 +11,8 @@ export async function MenuExperienceContainer({ tenantSlug }: MenuExperienceCont
     const menu = await fetchMenu(tenantSlug)
     const flatItems = flattenMenuItems(menu)
 
-    if (flatItems.length === 0) {
+    const isMenuEmpty = flatItems.length === 0
+    if (isMenuEmpty) {
         return (
             <main className={styles.menuUnavailable}>
                 <p className={styles.menuUnavailableText}>Menú no disponible en este momento.</p>

@@ -12,32 +12,28 @@ interface DrawerProps {
 
 export function Drawer({ isOpen, onClose, children, ariaLabel = "Panel lateral" }: DrawerProps) {
     useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = "hidden"
-        } else {
-            document.body.style.overflow = ""
-        }
+        document.body.style.overflow = isOpen ? "hidden" : ""
         return () => {
             document.body.style.overflow = ""
         }
     }, [isOpen])
 
-    function handleOverlayClick() {
-        onClose()
-    }
-
-    function handleKeyDown(event: React.KeyboardEvent) {
-        if (event.key === "Escape") {
-            onClose()
+    useEffect(() => {
+        if (!isOpen) return
+        function handleKeyDown(event: KeyboardEvent) {
+            const isEscapeKey = event.key === "Escape"
+            if (isEscapeKey) onClose()
         }
-    }
+        document.addEventListener("keydown", handleKeyDown)
+        return () => document.removeEventListener("keydown", handleKeyDown)
+    }, [isOpen, onClose])
 
     return (
         <>
             {isOpen && (
                 <div
                     className={styles.drawerOverlay}
-                    onClick={handleOverlayClick}
+                    onClick={onClose}
                     aria-hidden="true"
                 />
             )}
@@ -45,7 +41,6 @@ export function Drawer({ isOpen, onClose, children, ariaLabel = "Panel lateral" 
                 className={`${styles.drawer} ${isOpen ? styles.drawerOpen : ""}`}
                 aria-label={ariaLabel}
                 aria-hidden={!isOpen}
-                onKeyDown={handleKeyDown}
             >
                 {children}
             </aside>

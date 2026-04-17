@@ -135,6 +135,24 @@ pnpm test:unit        # Vitest unit tests
 pnpm test:unit --run  # single run (no watch)
 ```
 
+### Conditions
+Boolean conditions in JSX and `if` statements must read like English sentences — never use raw comparisons or type-guards inline. Extract to a named `const` (`is*`, `has*`, `can*`, `should*`) declared just before use.
+
+```ts
+// wrong
+if (menuItem !== undefined) { handleAddItem(menuItem) }
+{cart.itemCount > 0 && <CartBadge />}
+
+// right
+if (typeof menuItem === "undefined") return
+handleAddItem(menuItem)
+
+const hasItemsInCart = cart.itemCount > 0
+{hasItemsInCart && <CartBadge />}
+```
+
+Prefer guard clauses (early `return`) over positive-branch wrapping.
+
 ## Forbidden Patterns
 - `null` as a value — use `EMPTY_X` constants
 - `any` type — type everything
@@ -146,3 +164,4 @@ pnpm test:unit --run  # single run (no watch)
 - Throwing from service functions — return `EMPTY_X`
 - Animation libraries — pure CSS only
 - Non-null assertion `!`
+- Raw comparisons or type-guards used directly in JSX or `if` conditions — extract to a named boolean `const`

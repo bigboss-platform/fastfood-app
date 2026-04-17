@@ -6,6 +6,8 @@ import { EMPTY_FLAT_MENU_ITEM } from "../constants/menu-item.constant"
 import { useMenuScroll } from "../hooks/use-menu-scroll.hook"
 import { MenuItemSlide } from "./menu-item-slide.component"
 import { LoadingScreen } from "@/feature/loading/components/loading-screen.component"
+import { useCart } from "@/feature/cart/hooks/use-cart.hook"
+import { CartDrawer } from "@/feature/cart/components/cart-drawer.component"
 import styles from "../styles/menu-experience.style.module.css"
 
 interface MenuExperienceClientProps {
@@ -21,12 +23,31 @@ export function MenuExperienceClient({ items, tenantSlug: _tenantSlug }: MenuExp
 
     const activeItem: IFlatMenuItem = items[activeIndex] ?? EMPTY_FLAT_MENU_ITEM
 
+    const {
+        cart,
+        isDrawerOpen,
+        handleAddItem,
+        handleIncreaseQuantity,
+        handleDecreaseQuantity,
+        handleNoteChange,
+        handleOpenDrawer,
+        handleCloseDrawer,
+    } = useCart()
+
     const handleLoadingComplete = useCallback(() => {
         setIsLoading(false)
     }, [])
 
-    function handleAddToCart(_menuItemId: string) {
+    function handleAddToCart(menuItemId: string) {
+        const menuItem = items.find((item) => item.id === menuItemId)
+        if (typeof menuItem === "undefined") return
+        handleAddItem(menuItem)
     }
+
+    function handleCheckout() {
+    }
+
+    const hasItemsInCart = cart.itemCount > 0
 
     return (
         <main data-testid="menu-experience" className={styles.menuExperience}>
@@ -72,6 +93,30 @@ export function MenuExperienceClient({ items, tenantSlug: _tenantSlug }: MenuExp
             >
                 ↓
             </button>
+
+            {hasItemsInCart && (
+                <button
+                    type="button"
+                    data-testid="cart-badge"
+                    className={styles.cartBadgeButton}
+                    onClick={handleOpenDrawer}
+                    aria-label={`Abrir carrito, ${cart.itemCount} productos`}
+                >
+                    🛒
+                    <span className={styles.cartBadgeCount}>{cart.itemCount}</span>
+                </button>
+            )}
+
+            <CartDrawer
+                cart={cart}
+                isOpen={isDrawerOpen}
+                isAuthLoading={false}
+                onClose={handleCloseDrawer}
+                onIncreaseQuantity={handleIncreaseQuantity}
+                onDecreaseQuantity={handleDecreaseQuantity}
+                onNoteChange={handleNoteChange}
+                onCheckout={handleCheckout}
+            />
         </main>
     )
 }

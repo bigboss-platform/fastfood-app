@@ -1,0 +1,93 @@
+.cartItemRow {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background-color: rgba(255, 255, 255, 0.04);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+}
+
+.cartItemMain {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.cartItemName {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cartItemUnitPrice {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+}
+
+.cartItemControls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.cartItemControlButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    min-height: 32px;
+    min-width: 32px;
+    border-radius: var(--radius-full);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    line-height: 1;
+    transition: background-color var(--transition-fast);
+}
+
+.cartItemControlButton:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.cartItemQuantity {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    min-width: 24px;
+    text-align: center;
+}
+
+.cartItemLineTotal {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary);
+    white-space: nowrap;
+}
+
+.cartItemNote {
+    width: 100%;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-xs);
+    transition: border-color var(--transition-fast);
+}
+
+.cartItemNote::placeholder {
+    color: var(--color-text-secondary);
+}
+
+.cartItemNote:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
