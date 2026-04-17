@@ -1,3 +1,4 @@
+import Image from "next/image"
 import type { IMenuItem } from "../interfaces/menu-item.interface"
 import styles from "../styles/menu-item-slide.style.module.css"
 
@@ -20,26 +21,34 @@ export function MenuItemSlide({
 
     return (
         <article
+            data-testid="menu-item"
             className={`${styles.menuItemSlide} ${styles[direction]} ${!isVisible ? styles.hidden : ""}`}
             aria-hidden={!isVisible}
         >
             <div className={styles.menuItemSlidePhoto}>
-                {menuItem.photoUrl !== "" && (
-                    <img
+                {menuItem.photoUrl !== "" ? (
+                    <Image
                         src={menuItem.photoUrl}
                         alt={menuItem.name}
+                        fill
                         className={styles.menuItemSlideImage}
+                        sizes="100vw"
                     />
+                ) : (
+                    <div className={styles.menuItemSlidePhotoPlaceholder} aria-hidden="true" />
                 )}
             </div>
             <div className={styles.menuItemSlideContent}>
-                <h1 className={styles.menuItemSlideName}>{menuItem.name}</h1>
+                <h1 data-testid="menu-item-name" className={styles.menuItemSlideName}>
+                    {menuItem.name}
+                </h1>
                 <p className={styles.menuItemSlideDescription}>{menuItem.description}</p>
-                <span className={styles.menuItemSlidePrice}>
+                <span data-testid="menu-item-price" className={styles.menuItemSlidePrice}>
                     ${menuItem.price.toFixed(2)}
                 </span>
                 <button
                     type="button"
+                    data-testid="add-to-cart"
                     className={styles.menuItemSlideButton}
                     onClick={handleAddToCartClick}
                     disabled={!menuItem.isAvailable}

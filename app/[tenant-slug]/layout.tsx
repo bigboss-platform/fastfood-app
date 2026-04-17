@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { notFound } from "next/navigation"
 
 interface TenantLayoutProps {
     children: React.ReactNode
@@ -15,26 +16,40 @@ export async function generateMetadata({ params }: TenantLayoutProps): Promise<M
 export default async function TenantLayout({ children, params }: TenantLayoutProps) {
     const { "tenant-slug": tenantSlug } = await params
 
-    const themeResponse = await fetch(
-        `${process.env.API_BASE_URL}/api/v1/tenants/${tenantSlug}/theme`,
-        { cache: "no-store" }
-    ).catch(() => null)
+    let themeResponse: Response | undefined
+    try {
+        themeResponse = await fetch(
+            `${process.env.API_BASE_URL}/api/v1/tenants/${tenantSlug}/theme`,
+            { cache: "no-store" }
+        )
+    } catch {
+    }
 
-    const themeData = themeResponse?.ok ? await themeResponse.json() : null
-    const theme = themeData?.data ?? null
+    if (themeResponse?.status === 404) {
+        notFound()
+    }
+
+    let theme: Record<string, string> | undefined
+    try {
+        if (themeResponse?.ok) {
+            const body: { data?: Record<string, string> } = await themeResponse.json()
+            theme = body.data
+        }
+    } catch {
+    }
 
     const tenantCssVariables = theme
         ? `
         :root {
-            --color-primary: ${theme.primary_color};
-            --color-primary-hover: ${theme.primary_color_hover};
-            --color-secondary: ${theme.secondary_color};
-            --color-background: ${theme.background_color};
-            --color-surface: ${theme.surface_color};
-            --color-text-primary: ${theme.text_primary_color};
-            --color-text-secondary: ${theme.text_secondary_color};
-            --color-loading-background: ${theme.loading_screen_background_color};
-            --font-family-base: '${theme.font_family_name}', system-ui, sans-serif;
+            --color-primary: ${theme["primary_color"]};
+            --color-primary-hover: ${theme["primary_color_hover"]};
+            --color-secondary: ${theme["secondary_color"]};
+            --color-background: ${theme["background_color"]};
+            --color-surface: ${theme["surface_color"]};
+            --color-text-primary: ${theme["text_primary_color"]};
+            --color-text-secondary: ${theme["text_secondary_color"]};
+            --color-loading-background: ${theme["loading_screen_background_color"]};
+            --font-family-base: '${theme["font_family_name"]}', system-ui, sans-serif;
         }
         `
         : ""
@@ -44,8 +59,8 @@ export default async function TenantLayout({ children, params }: TenantLayoutPro
             {tenantCssVariables !== "" && (
                 <style id="tenant-theme" dangerouslySetInnerHTML={{ __html: tenantCssVariables }} />
             )}
-            {theme?.font_family_url !== "" && theme?.font_family_url && (
-                <link rel="stylesheet" href={theme.font_family_url} />
+            {theme?.["font_family_url"] && (
+                <link rel="stylesheet" href={theme["font_family_url"]} />
             )}
             {children}
         </>

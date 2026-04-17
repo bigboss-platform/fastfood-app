@@ -1,0 +1,45 @@
+import config from "@bigboss/eslint-config"
+
+const browserAndNodeGlobals = {
+    fetch: "readonly",
+    process: "readonly",
+    setTimeout: "readonly",
+    clearTimeout: "readonly",
+    setInterval: "readonly",
+    clearInterval: "readonly",
+    document: "readonly",
+    window: "readonly",
+    navigator: "readonly",
+    console: "readonly",
+    URL: "readonly",
+    URLSearchParams: "readonly",
+    FormData: "readonly",
+    Headers: "readonly",
+    Request: "readonly",
+    Response: "readonly",
+    Event: "readonly",
+    EventTarget: "readonly",
+    localStorage: "readonly",
+    sessionStorage: "readonly",
+    React: "readonly",
+    __dirname: "readonly",
+    __filename: "readonly",
+    Buffer: "readonly",
+    global: "readonly",
+    module: "readonly",
+    require: "readonly",
+    exports: "readonly",
+}
+
+export default [
+    { ignores: ["tests/e2e/**"] },
+    {
+        languageOptions: {
+            globals: browserAndNodeGlobals,
+        },
+        rules: {
+            "no-empty": ["error", { allowEmptyCatch: true }],
+        },
+    },
+    ...config,
+]

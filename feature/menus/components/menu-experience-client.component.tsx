@@ -1,74 +1,77 @@
 "use client"
 
-import { useState } from "react"
-import type { IMenu } from "../interfaces/menu.interface"
-import type { IMenuSection } from "../interfaces/menu-section.interface"
+import { useState, useCallback } from "react"
+import type { IFlatMenuItem } from "../interfaces/flat-menu-item.interface"
+import { EMPTY_FLAT_MENU_ITEM } from "../constants/menu-item.constant"
 import { useMenuScroll } from "../hooks/use-menu-scroll.hook"
 import { MenuItemSlide } from "./menu-item-slide.component"
 import { LoadingScreen } from "@/feature/loading/components/loading-screen.component"
 import styles from "../styles/menu-experience.style.module.css"
 
 interface MenuExperienceClientProps {
-    menu: IMenu
+    items: IFlatMenuItem[]
     tenantSlug: string
 }
 
-export function MenuExperienceClient({ menu, tenantSlug }: MenuExperienceClientProps) {
+export function MenuExperienceClient({ items, tenantSlug: _tenantSlug }: MenuExperienceClientProps) {
     const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [activeSection, setActiveSection] = useState<IMenuSection>(
-        menu.sections[0] ?? { id: "", menuId: "", name: "", sortOrder: 0, isActive: true, items: [] }
-    )
 
-    const { activeItem, activeIndex, canScrollUp, canScrollDown, handleScrollUp, handleScrollDown } =
-        useMenuScroll(activeSection.items)
+    const { activeIndex, canScrollUp, canScrollDown, handleScrollUp, handleScrollDown } =
+        useMenuScroll(items)
 
-    function handleLoadingComplete() {
+    const activeItem: IFlatMenuItem = items[activeIndex] ?? EMPTY_FLAT_MENU_ITEM
+
+    const handleLoadingComplete = useCallback(() => {
         setIsLoading(false)
-    }
+    }, [])
 
-    function handleAddToCart(menuItemId: string) {
-        // Cart drawer opens — wired in next iteration
-    }
-
-    if (isLoading) {
-        return <LoadingScreen onComplete={handleLoadingComplete} />
+    function handleAddToCart(_menuItemId: string) {
     }
 
     return (
-        <main className={styles.menuExperience}>
+        <main data-testid="menu-experience" className={styles.menuExperience}>
+            {isLoading && <LoadingScreen onComplete={handleLoadingComplete} />}
+
+            <header className={styles.menuExperienceHeader}>
+                <span className={styles.menuExperienceSectionLabel}>{activeItem.sectionName}</span>
+                <span className={styles.menuExperienceCounter}>
+                    {activeIndex + 1} / {items.length}
+                </span>
+            </header>
+
             <section className={styles.menuExperienceSlider}>
-                {activeSection.items.map((item, index) => (
+                {items.map((item, index) => (
                     <MenuItemSlide
                         key={item.id}
                         menuItem={item}
                         onAddToCart={handleAddToCart}
                         isVisible={index === activeIndex}
-                        direction={index === activeIndex ? "idle" : "exiting"}
+                        direction={index === activeIndex ? "entering" : "exiting"}
                     />
                 ))}
             </section>
 
-            {canScrollUp && (
-                <button
-                    type="button"
-                    className={`${styles.scrollButton} ${styles.scrollButtonUp}`}
-                    onClick={handleScrollUp}
-                    aria-label="Ver item anterior"
-                >
-                    ↑
-                </button>
-            )}
+            <button
+                type="button"
+                data-testid="scroll-up"
+                className={`${styles.scrollButton} ${styles.scrollButtonUp}`}
+                onClick={handleScrollUp}
+                disabled={!canScrollUp}
+                aria-label="Ver item anterior"
+            >
+                ↑
+            </button>
 
-            {canScrollDown && (
-                <button
-                    type="button"
-                    className={`${styles.scrollButton} ${styles.scrollButtonDown}`}
-                    onClick={handleScrollDown}
-                    aria-label="Ver siguiente item"
-                >
-                    ↓
-                </button>
-            )}
+            <button
+                type="button"
+                data-testid="scroll-down"
+                className={`${styles.scrollButton} ${styles.scrollButtonDown}`}
+                onClick={handleScrollDown}
+                disabled={!canScrollDown}
+                aria-label="Ver siguiente item"
+            >
+                ↓
+            </button>
         </main>
     )
 }

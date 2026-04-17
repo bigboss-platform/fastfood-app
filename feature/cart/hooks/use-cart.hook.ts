@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react"
 import type { ICart } from "../interfaces/cart.interface"
 import type { ICartItem } from "../interfaces/cart-item.interface"
-import { EMPTY_CART, EMPTY_CART_ITEM } from "../constants/cart.constant"
+import { EMPTY_CART_ITEM } from "../constants/cart.constant"
 import type { IMenuItem } from "@/feature/menus/interfaces/menu-item.interface"
 
 interface UseCartResult {
