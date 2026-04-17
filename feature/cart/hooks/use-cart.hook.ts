@@ -3,13 +3,16 @@
 import { useState, useCallback } from "react"
 import type { ICart } from "../interfaces/cart.interface"
 import type { ICartItem } from "../interfaces/cart-item.interface"
+import type { ITokenPair } from "@/feature/auth/interfaces/token-pair.interface"
 import { EMPTY_CART_ITEM } from "../constants/cart.constant"
 import { calculateTotals } from "../utils/calculate-totals.util"
+import { useAuth } from "@/feature/auth/hooks/use-auth.hook"
 import type { IMenuItem } from "@/feature/menus/interfaces/menu-item.interface"
 
 interface UseCartResult {
     cart: ICart
     isDrawerOpen: boolean
+    isAuthFlowVisible: boolean
     handleAddItem: (menuItem: IMenuItem) => void
     handleIncreaseQuantity: (cartItemId: string) => void
     handleDecreaseQuantity: (cartItemId: string) => void
@@ -17,12 +20,17 @@ interface UseCartResult {
     handleOpenDrawer: () => void
     handleCloseDrawer: () => void
     handleClearCart: () => void
+    handleCheckout: () => void
+    handleAuthSuccess: (tokenPair: ITokenPair) => void
 }
 
 export function useCart(): UseCartResult {
     const [cartItems, setCartItems] = useState<ICartItem[]>([])
     const [deliveryCost, setDeliveryCost] = useState<number>(0)
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
+    const [isAuthFlowVisible, setIsAuthFlowVisible] = useState<boolean>(false)
+
+    const { isAuthenticated, login } = useAuth()
 
     const cart: ICart = calculateTotals(cartItems, deliveryCost)
 
@@ -81,9 +89,25 @@ export function useCart(): UseCartResult {
         setDeliveryCost(0)
     }, [])
 
+    const handleCheckout = useCallback(() => {
+        if (isAuthenticated) {
+            return
+        }
+        setIsAuthFlowVisible(true)
+    }, [isAuthenticated])
+
+    const handleAuthSuccess = useCallback(
+        (tokenPair: ITokenPair) => {
+            login(tokenPair)
+            setIsAuthFlowVisible(false)
+        },
+        [login]
+    )
+
     return {
         cart,
         isDrawerOpen,
+        isAuthFlowVisible,
         handleAddItem,
         handleIncreaseQuantity,
         handleDecreaseQuantity,
@@ -91,5 +115,7 @@ export function useCart(): UseCartResult {
         handleOpenDrawer,
         handleCloseDrawer,
         handleClearCart,
+        handleCheckout,
+        handleAuthSuccess,
     }
 }

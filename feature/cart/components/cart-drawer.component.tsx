@@ -1,5 +1,6 @@
 "use client"
 
+import type { ReactNode } from "react"
 import type { ICart } from "../interfaces/cart.interface"
 import { Drawer } from "@/feature/shared/components/drawer.component"
 import { CartItemRow } from "./cart-item-row.component"
@@ -15,6 +16,7 @@ interface CartDrawerProps {
     onDecreaseQuantity: (cartItemId: string) => void
     onNoteChange: (cartItemId: string, note: string) => void
     onCheckout: () => void
+    authFlowNode?: ReactNode
 }
 
 export function CartDrawer({
@@ -26,8 +28,10 @@ export function CartDrawer({
     onDecreaseQuantity,
     onNoteChange,
     onCheckout,
+    authFlowNode,
 }: CartDrawerProps) {
-    const hasItems = cart.items.length > 0
+    const hasItems = Boolean(cart.items.length)
+    const showAuthFlow = Boolean(authFlowNode)
 
     return (
         <Drawer isOpen={isOpen} onClose={onClose} ariaLabel="Carrito de compras">
@@ -45,7 +49,9 @@ export function CartDrawer({
                     </button>
                 </header>
 
-                {hasItems ? (
+                {showAuthFlow ? (
+                    authFlowNode
+                ) : hasItems ? (
                     <>
                         <ul className={styles.cartItemsList}>
                             {cart.items.map((item) => (

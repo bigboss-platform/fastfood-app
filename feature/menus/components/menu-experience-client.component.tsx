@@ -8,6 +8,7 @@ import { MenuItemSlide } from "./menu-item-slide.component"
 import { LoadingScreen } from "@/feature/loading/components/loading-screen.component"
 import { useCart } from "@/feature/cart/hooks/use-cart.hook"
 import { CartDrawer } from "@/feature/cart/components/cart-drawer.component"
+import { AuthFlow } from "@/feature/auth/components/auth-flow.component"
 import styles from "../styles/menu-experience.style.module.css"
 
 interface MenuExperienceClientProps {
@@ -15,7 +16,7 @@ interface MenuExperienceClientProps {
     tenantSlug: string
 }
 
-export function MenuExperienceClient({ items, tenantSlug: _tenantSlug }: MenuExperienceClientProps) {
+export function MenuExperienceClient({ items, tenantSlug }: MenuExperienceClientProps) {
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const { activeIndex, canScrollUp, canScrollDown, handleScrollUp, handleScrollDown } =
@@ -26,12 +27,15 @@ export function MenuExperienceClient({ items, tenantSlug: _tenantSlug }: MenuExp
     const {
         cart,
         isDrawerOpen,
+        isAuthFlowVisible,
         handleAddItem,
         handleIncreaseQuantity,
         handleDecreaseQuantity,
         handleNoteChange,
         handleOpenDrawer,
         handleCloseDrawer,
+        handleCheckout,
+        handleAuthSuccess,
     } = useCart()
 
     const handleLoadingComplete = useCallback(() => {
@@ -44,10 +48,7 @@ export function MenuExperienceClient({ items, tenantSlug: _tenantSlug }: MenuExp
         handleAddItem(menuItem)
     }
 
-    function handleCheckout() {
-    }
-
-    const hasItemsInCart = cart.itemCount > 0
+    const hasItemsInCart = Boolean(cart.itemCount)
 
     return (
         <main data-testid="menu-experience" className={styles.menuExperience}>
@@ -116,6 +117,11 @@ export function MenuExperienceClient({ items, tenantSlug: _tenantSlug }: MenuExp
                 onDecreaseQuantity={handleDecreaseQuantity}
                 onNoteChange={handleNoteChange}
                 onCheckout={handleCheckout}
+                authFlowNode={
+                    isAuthFlowVisible && (
+                        <AuthFlow tenantId={tenantSlug} onAuthSuccess={handleAuthSuccess} />
+                    )
+                }
             />
         </main>
     )
