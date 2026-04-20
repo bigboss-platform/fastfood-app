@@ -2,11 +2,12 @@
 
 import type { IMenu } from "../interfaces/menu.interface"
 import { EMPTY_MENU } from "../constants/menu-item.constant"
+import { TENANT_SLUG } from "@/feature/shared/constants/tenant.constant"
 
-export async function fetchMenu(tenantSlug: string): Promise<IMenu> {
+export async function fetchMenu(): Promise<IMenu> {
     try {
         const response = await fetch(
-            `${process.env.API_BASE_URL}/api/v1/tenants/${tenantSlug}/menu`,
+            `${process.env.API_BASE_URL}/api/v1/tenants/${TENANT_SLUG}/menu`,
             { cache: "no-store" }
         )
         if (!response.ok) return EMPTY_MENU

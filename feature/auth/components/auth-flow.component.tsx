@@ -8,11 +8,10 @@ import { OtpStep } from "../enums/otp-step.enum"
 import styles from "../styles/auth-flow.style.module.css"
 
 interface AuthFlowProps {
-    tenantId: string
     onAuthSuccess: (tokenPair: ITokenPair) => void
 }
 
-export function AuthFlow({ tenantId, onAuthSuccess }: AuthFlowProps) {
+export function AuthFlow({ onAuthSuccess }: AuthFlowProps) {
     const [step, setStep] = useState<OtpStep>(OtpStep.PHONE)
     const [phone, setPhone] = useState<string>("")
 
@@ -30,14 +29,9 @@ export function AuthFlow({ tenantId, onAuthSuccess }: AuthFlowProps) {
     return (
         <div data-testid="auth-flow" className={styles.authFlow}>
             {isPhoneStep ? (
-                <OtpPhoneStep tenantId={tenantId} onSuccess={handlePhoneSuccess} />
+                <OtpPhoneStep onSuccess={handlePhoneSuccess} />
             ) : (
-                <OtpCodeStep
-                    phone={phone}
-                    tenantId={tenantId}
-                    onSuccess={onAuthSuccess}
-                    onBack={handleBack}
-                />
+                <OtpCodeStep phone={phone} onSuccess={onAuthSuccess} onBack={handleBack} />
             )}
         </div>
     )

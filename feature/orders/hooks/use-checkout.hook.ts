@@ -8,6 +8,7 @@ import { CheckoutStep } from "../enums/checkout-step.enum"
 import { DeliveryType } from "../enums/delivery-type.enum"
 import { calculateDeliveryCost } from "../services/delivery.service"
 import { createOrder } from "../services/order.service"
+import { TENANT_SLUG } from "@/feature/shared/constants/tenant.constant"
 import { deliveryTypeToApi } from "../utils/delivery-type-to-api.util"
 import {
     EMPTY_GEOCODE_RESULT,
@@ -16,7 +17,6 @@ import {
 } from "../constants/order.constant"
 
 interface UseCheckoutProps {
-    tenantSlug: string
     paymentInstructions: string
     cart: ICart
     accessToken: string
@@ -44,7 +44,6 @@ interface UseCheckoutResult {
 }
 
 export function useCheckout({
-    tenantSlug,
     cart,
     accessToken,
     clearCart,
@@ -64,11 +63,11 @@ export function useCheckout({
     const runDeliveryCostCalculation = useCallback(
         async (lat: number, lng: number) => {
             setIsCostLoading(true)
-            const result = await calculateDeliveryCost(tenantSlug, lat, lng, accessToken)
+            const result = await calculateDeliveryCost(lat, lng, accessToken)
             setDeliveryCostResult(result)
             setIsCostLoading(false)
         },
-        [tenantSlug, accessToken]
+        [accessToken]
     )
 
     const handleSelectDeliveryType = useCallback((type: DeliveryType) => {
@@ -117,7 +116,7 @@ export function useCheckout({
             deliveryLng: geocodeResult.lng,
             notes,
         }
-        const result = await createOrder(tenantSlug, request, accessToken)
+        const result = await createOrder(request, accessToken)
         if (!result.success) {
             setOrderError("No pudimos procesar tu pedido. Por favor intenta de nuevo.")
             setIsSubmitting(false)
@@ -132,7 +131,6 @@ export function useCheckout({
         geocodeResult,
         address,
         notes,
-        tenantSlug,
         accessToken,
         clearCart,
         onOrderPlaced,

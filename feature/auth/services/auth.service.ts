@@ -4,16 +4,14 @@ import type { ITokenPair } from "../interfaces/token-pair.interface"
 import type { IVerifyOtpResult } from "../interfaces/verify-otp-result.interface"
 import { EMPTY_TOKEN_PAIR } from "../constants/auth.constant"
 import { OtpErrorCode } from "../enums/otp-error-code.enum"
+import { TENANT_SLUG } from "@/feature/shared/constants/tenant.constant"
 
-export async function requestOtp(
-    phoneNumber: string,
-    tenantId: string
-): Promise<{ expiresInSeconds: number }> {
+export async function requestOtp(phoneNumber: string): Promise<{ expiresInSeconds: number }> {
     try {
         const response = await fetch(`${process.env.API_BASE_URL}/api/v1/auth/otp/request`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ phone_number: phoneNumber, tenant_id: tenantId }),
+            body: JSON.stringify({ phone_number: phoneNumber, tenant_id: TENANT_SLUG }),
             cache: "no-store",
         })
         if (!response.ok) return { expiresInSeconds: 0 }
@@ -31,16 +29,12 @@ function toOtpErrorCode(code: string): OtpErrorCode {
     return OtpErrorCode.UNKNOWN
 }
 
-export async function verifyOtp(
-    phoneNumber: string,
-    code: string,
-    tenantId: string
-): Promise<IVerifyOtpResult> {
+export async function verifyOtp(phoneNumber: string, code: string): Promise<IVerifyOtpResult> {
     try {
         const response = await fetch(`${process.env.API_BASE_URL}/api/v1/auth/otp/verify`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ phone_number: phoneNumber, code, tenant_id: tenantId }),
+            body: JSON.stringify({ phone_number: phoneNumber, code, tenant_id: TENANT_SLUG }),
             cache: "no-store",
         })
         if (!response.ok) {

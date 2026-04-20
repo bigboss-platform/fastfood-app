@@ -16,15 +16,10 @@ import styles from "../styles/menu-experience.style.module.css"
 
 interface MenuExperienceClientProps {
     items: IFlatMenuItem[]
-    tenantSlug: string
     whatsappNumber: string
 }
 
-export function MenuExperienceClient({
-    items,
-    tenantSlug,
-    whatsappNumber,
-}: MenuExperienceClientProps) {
+export function MenuExperienceClient({ items, whatsappNumber }: MenuExperienceClientProps) {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [activeOrderId, setActiveOrderId] = useState<string>("")
 
@@ -87,7 +82,6 @@ export function MenuExperienceClient({
         return (
             <ActiveOrderContainer
                 orderId={activeOrderId}
-                tenantSlug={tenantSlug}
                 whatsappNumber={whatsappNumber}
                 onReturnToMenu={handleReturnToMenu}
             />
@@ -97,7 +91,6 @@ export function MenuExperienceClient({
     if (isCheckoutVisible) {
         return (
             <CheckoutContainer
-                tenantSlug={tenantSlug}
                 cart={cart}
                 accessToken={accessToken}
                 clearCart={clearCart}
@@ -175,7 +168,7 @@ export function MenuExperienceClient({
                 onCheckout={handleCheckout}
                 authFlowNode={
                     isAuthFlowVisible && (
-                        <AuthFlow tenantId={tenantSlug} onAuthSuccess={handleAuthSuccess} />
+                        <AuthFlow onAuthSuccess={handleAuthSuccess} />
                     )
                 }
             />

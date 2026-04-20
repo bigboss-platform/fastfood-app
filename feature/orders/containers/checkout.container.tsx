@@ -9,7 +9,6 @@ import { CheckoutStep } from "../enums/checkout-step.enum"
 import { DeliveryType } from "../enums/delivery-type.enum"
 
 interface CheckoutContainerProps {
-    tenantSlug: string
     cart: ICart
     accessToken: string
     clearCart: () => void
@@ -17,7 +16,6 @@ interface CheckoutContainerProps {
 }
 
 export function CheckoutContainer({
-    tenantSlug,
     cart,
     accessToken,
     clearCart,
@@ -41,7 +39,6 @@ export function CheckoutContainer({
         handlePlaceOrder,
         handleBack,
     } = useCheckout({
-        tenantSlug,
         paymentInstructions: "",
         cart,
         accessToken,

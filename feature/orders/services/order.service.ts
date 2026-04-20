@@ -12,15 +12,15 @@ import {
     EMPTY_FETCH_ORDER_RESULT,
     EMPTY_ORDER,
 } from "../constants/order.constant"
+import { TENANT_SLUG } from "@/feature/shared/constants/tenant.constant"
 
 export async function createOrder(
-    slug: string,
     request: ICreateOrderRequest,
     accessToken: string
 ): Promise<ICreateOrderResult> {
     try {
         const response = await fetch(
-            `${process.env.API_BASE_URL}/api/v1/tenants/${slug}/orders`,
+            `${process.env.API_BASE_URL}/api/v1/tenants/${TENANT_SLUG}/orders`,
             {
                 method: "POST",
                 headers: {
@@ -80,13 +80,12 @@ type OrderBody = {
 }
 
 export async function fetchOrder(
-    slug: string,
     orderId: string,
     accessToken: string
 ): Promise<IFetchOrderResult> {
     try {
         const response = await fetch(
-            `${process.env.API_BASE_URL}/api/v1/tenants/${slug}/orders/${orderId}`,
+            `${process.env.API_BASE_URL}/api/v1/tenants/${TENANT_SLUG}/orders/${orderId}`,
             {
                 headers: { Authorization: `Bearer ${accessToken}` },
                 cache: "no-store",

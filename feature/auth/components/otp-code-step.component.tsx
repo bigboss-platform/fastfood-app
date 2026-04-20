@@ -9,7 +9,6 @@ import styles from "../styles/auth-flow.style.module.css"
 
 interface OtpCodeStepProps {
     phone: string
-    tenantId: string
     onSuccess: (tokenPair: ITokenPair) => void
     onBack: () => void
 }
@@ -22,7 +21,7 @@ const ERROR_MESSAGES: Record<OtpErrorCode, string> = {
     [OtpErrorCode.UNKNOWN]: "Error al verificar el código. Intenta de nuevo.",
 }
 
-export function OtpCodeStep({ phone, tenantId, onSuccess, onBack }: OtpCodeStepProps) {
+export function OtpCodeStep({ phone, onSuccess, onBack }: OtpCodeStepProps) {
     const [code, setCode] = useState<string>("")
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [errorCode, setErrorCode] = useState<OtpErrorCode>(OtpErrorCode.NONE)
@@ -45,7 +44,7 @@ export function OtpCodeStep({ phone, tenantId, onSuccess, onBack }: OtpCodeStepP
         }
         setIsLoading(true)
         setErrorCode(OtpErrorCode.NONE)
-        const result = await verifyOtp(phone, code, tenantId)
+        const result = await verifyOtp(phone, code)
         setIsLoading(false)
         const hasErrorCode = Boolean(result.errorCode)
         if (!hasErrorCode) {

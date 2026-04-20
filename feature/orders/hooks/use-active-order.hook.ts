@@ -12,7 +12,6 @@ const POLL_INTERVAL_MS = 15_000
 
 interface UseActiveOrderProps {
     orderId: string
-    tenantSlug: string
     onNotFound: () => void
 }
 
@@ -24,7 +23,6 @@ interface UseActiveOrderResult {
 
 export function useActiveOrder({
     orderId,
-    tenantSlug,
     onNotFound,
 }: UseActiveOrderProps): UseActiveOrderResult {
     const [order, setOrder] = useState<IOrder>(EMPTY_ORDER)
@@ -42,7 +40,7 @@ export function useActiveOrder({
     const loadOrder = useCallback(async () => {
         const hasAccessToken = Boolean(session.accessToken)
         if (!hasAccessToken) return
-        const result = await fetchOrder(tenantSlug, orderId, session.accessToken)
+        const result = await fetchOrder(orderId, session.accessToken)
         if (result.notFound) {
             stopPolling()
             localStorage.removeItem(BB_ACTIVE_ORDER_ID_KEY)
@@ -55,7 +53,7 @@ export function useActiveOrder({
         if (isTerminal) {
             stopPolling()
         }
-    }, [tenantSlug, orderId, session.accessToken, stopPolling, onNotFound])
+    }, [orderId, session.accessToken, stopPolling, onNotFound])
 
     useEffect(() => {
         loadOrder()

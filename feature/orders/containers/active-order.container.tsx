@@ -8,20 +8,17 @@ import styles from "../styles/active-order.style.module.css"
 
 interface ActiveOrderContainerProps {
     orderId: string
-    tenantSlug: string
     whatsappNumber: string
     onReturnToMenu: () => void
 }
 
 export function ActiveOrderContainer({
     orderId,
-    tenantSlug,
     whatsappNumber,
     onReturnToMenu,
 }: ActiveOrderContainerProps) {
     const { order, isLoading, handleDismiss } = useActiveOrder({
         orderId,
-        tenantSlug,
         onNotFound: onReturnToMenu,
     })
 

@@ -5,11 +5,10 @@ import { requestOtp } from "../services/auth.service"
 import styles from "../styles/auth-flow.style.module.css"
 
 interface OtpPhoneStepProps {
-    tenantId: string
     onSuccess: (phone: string) => void
 }
 
-export function OtpPhoneStep({ tenantId, onSuccess }: OtpPhoneStepProps) {
+export function OtpPhoneStep({ onSuccess }: OtpPhoneStepProps) {
     const [phone, setPhone] = useState<string>("")
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string>("")
@@ -23,7 +22,7 @@ export function OtpPhoneStep({ tenantId, onSuccess }: OtpPhoneStepProps) {
         }
         setIsLoading(true)
         setErrorMessage("")
-        const result = await requestOtp(phone.trim(), tenantId)
+        const result = await requestOtp(phone.trim())
         setIsLoading(false)
         const requestSucceeded = Boolean(result.expiresInSeconds)
         if (!requestSucceeded) {

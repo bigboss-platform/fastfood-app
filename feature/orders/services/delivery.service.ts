@@ -2,16 +2,16 @@
 
 import type { IDeliveryCostResult } from "../interfaces/delivery-cost-result.interface"
 import { EMPTY_DELIVERY_COST_RESULT } from "../constants/order.constant"
+import { TENANT_SLUG } from "@/feature/shared/constants/tenant.constant"
 
 export async function calculateDeliveryCost(
-    slug: string,
     lat: number,
     lng: number,
     accessToken: string
 ): Promise<IDeliveryCostResult> {
     try {
         const response = await fetch(
-            `${process.env.API_BASE_URL}/api/v1/tenants/${slug}/delivery/calculate`,
+            `${process.env.API_BASE_URL}/api/v1/tenants/${TENANT_SLUG}/delivery/calculate`,
             {
                 method: "POST",
                 headers: {
