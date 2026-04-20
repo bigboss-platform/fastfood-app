@@ -13,6 +13,8 @@ interface UseCartResult {
     cart: ICart
     isDrawerOpen: boolean
     isAuthFlowVisible: boolean
+    isCheckoutVisible: boolean
+    accessToken: string
     handleAddItem: (menuItem: IMenuItem) => void
     handleIncreaseQuantity: (cartItemId: string) => void
     handleDecreaseQuantity: (cartItemId: string) => void
@@ -20,8 +22,11 @@ interface UseCartResult {
     handleOpenDrawer: () => void
     handleCloseDrawer: () => void
     handleClearCart: () => void
+    clearCart: () => void
     handleCheckout: () => void
     handleAuthSuccess: (tokenPair: ITokenPair) => void
+    handleCancelCheckout: () => void
+    handleCompleteCheckout: () => void
 }
 
 export function useCart(): UseCartResult {
@@ -29,8 +34,9 @@ export function useCart(): UseCartResult {
     const [deliveryCost, setDeliveryCost] = useState<number>(0)
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
     const [isAuthFlowVisible, setIsAuthFlowVisible] = useState<boolean>(false)
+    const [isCheckoutVisible, setIsCheckoutVisible] = useState<boolean>(false)
 
-    const { isAuthenticated, login } = useAuth()
+    const { isAuthenticated, login, session } = useAuth()
 
     const cart: ICart = calculateTotals(cartItems, deliveryCost)
 
@@ -91,6 +97,8 @@ export function useCart(): UseCartResult {
 
     const handleCheckout = useCallback(() => {
         if (isAuthenticated) {
+            setIsDrawerOpen(false)
+            setIsCheckoutVisible(true)
             return
         }
         setIsAuthFlowVisible(true)
@@ -100,14 +108,27 @@ export function useCart(): UseCartResult {
         (tokenPair: ITokenPair) => {
             login(tokenPair)
             setIsAuthFlowVisible(false)
+            setIsDrawerOpen(false)
+            setIsCheckoutVisible(true)
         },
         [login]
     )
+
+    const handleCancelCheckout = useCallback(() => {
+        setIsCheckoutVisible(false)
+        setIsDrawerOpen(true)
+    }, [])
+
+    const handleCompleteCheckout = useCallback(() => {
+        setIsCheckoutVisible(false)
+    }, [])
 
     return {
         cart,
         isDrawerOpen,
         isAuthFlowVisible,
+        isCheckoutVisible,
+        accessToken: session.accessToken,
         handleAddItem,
         handleIncreaseQuantity,
         handleDecreaseQuantity,
@@ -115,7 +136,10 @@ export function useCart(): UseCartResult {
         handleOpenDrawer,
         handleCloseDrawer,
         handleClearCart,
+        clearCart: handleClearCart,
         handleCheckout,
         handleAuthSuccess,
+        handleCancelCheckout,
+        handleCompleteCheckout,
     }
 }

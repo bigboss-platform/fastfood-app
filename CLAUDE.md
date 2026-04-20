@@ -11,6 +11,8 @@ URL structure: `/{tenant-slug}` — every route is tenant-aware.
 ## Stack
 - Next.js 15 (App Router), TypeScript strict, CSS Modules only
 - No UI component libraries, no animation libraries (pure CSS keyframes)
+- Leaflet + OpenStreetMap for all maps — no Google Maps API, no API key required
+- Delivery guy links use plain URL: `https://maps.google.com/?q={lat},{lng}` — no API
 - Vitest + React Testing Library (unit), Playwright (E2E against staging only)
 - Dev Container — open in VS Code and reopen in container
 
@@ -185,5 +187,6 @@ Prefer guard clauses (early `return`) over positive-branch wrapping.
 - `console.log`
 - Throwing from service functions — return `EMPTY_X`
 - Animation libraries — pure CSS only
+- Google Maps API or `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` — use Leaflet + OpenStreetMap instead
 - Non-null assertion `!`
 - Raw comparisons or type-guards used directly in JSX or `if` conditions — extract to a named boolean `const`

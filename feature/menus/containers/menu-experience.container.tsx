@@ -20,5 +20,5 @@ export async function MenuExperienceContainer({ tenantSlug }: MenuExperienceCont
         )
     }
 
-    return <MenuExperienceClient items={flatItems} tenantSlug={tenantSlug} />
+    return <MenuExperienceClient items={flatItems} tenantSlug={tenantSlug} whatsappNumber="" />
 }

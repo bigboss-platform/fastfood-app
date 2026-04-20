@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import type { IFlatMenuItem } from "../interfaces/flat-menu-item.interface"
 import { EMPTY_FLAT_MENU_ITEM } from "../constants/menu-item.constant"
 import { useMenuScroll } from "../hooks/use-menu-scroll.hook"
@@ -9,15 +9,35 @@ import { LoadingScreen } from "@/feature/loading/components/loading-screen.compo
 import { useCart } from "@/feature/cart/hooks/use-cart.hook"
 import { CartDrawer } from "@/feature/cart/components/cart-drawer.component"
 import { AuthFlow } from "@/feature/auth/components/auth-flow.component"
+import { ActiveOrderContainer } from "@/feature/orders/containers/active-order.container"
+import { CheckoutContainer } from "@/feature/orders/containers/checkout.container"
+import { BB_ACTIVE_ORDER_ID_KEY } from "@/feature/orders/constants/order.constant"
 import styles from "../styles/menu-experience.style.module.css"
 
 interface MenuExperienceClientProps {
     items: IFlatMenuItem[]
     tenantSlug: string
+    whatsappNumber: string
 }
 
-export function MenuExperienceClient({ items, tenantSlug }: MenuExperienceClientProps) {
+export function MenuExperienceClient({
+    items,
+    tenantSlug,
+    whatsappNumber,
+}: MenuExperienceClientProps) {
     const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [activeOrderId, setActiveOrderId] = useState<string>("")
+
+    useEffect(() => {
+        const storedOrderId = localStorage.getItem(BB_ACTIVE_ORDER_ID_KEY) ?? ""
+        const hasActiveOrder = Boolean(storedOrderId)
+        if (!hasActiveOrder) return
+        setActiveOrderId(storedOrderId)
+    }, [])
+
+    const handleReturnToMenu = useCallback(() => {
+        setActiveOrderId("")
+    }, [])
 
     const { activeIndex, canScrollUp, canScrollDown, handleScrollUp, handleScrollDown } =
         useMenuScroll(items)
@@ -28,19 +48,31 @@ export function MenuExperienceClient({ items, tenantSlug }: MenuExperienceClient
         cart,
         isDrawerOpen,
         isAuthFlowVisible,
+        isCheckoutVisible,
+        accessToken,
         handleAddItem,
         handleIncreaseQuantity,
         handleDecreaseQuantity,
         handleNoteChange,
         handleOpenDrawer,
         handleCloseDrawer,
+        clearCart,
         handleCheckout,
         handleAuthSuccess,
+        handleCompleteCheckout,
     } = useCart()
 
     const handleLoadingComplete = useCallback(() => {
         setIsLoading(false)
     }, [])
+
+    const handleOrderPlaced = useCallback(
+        (orderId: string) => {
+            handleCompleteCheckout()
+            setActiveOrderId(orderId)
+        },
+        [handleCompleteCheckout]
+    )
 
     function handleAddToCart(menuItemId: string) {
         const menuItem = items.find((item) => item.id === menuItemId)
@@ -49,6 +81,30 @@ export function MenuExperienceClient({ items, tenantSlug }: MenuExperienceClient
     }
 
     const hasItemsInCart = Boolean(cart.itemCount)
+    const hasActiveOrder = Boolean(activeOrderId)
+
+    if (hasActiveOrder) {
+        return (
+            <ActiveOrderContainer
+                orderId={activeOrderId}
+                tenantSlug={tenantSlug}
+                whatsappNumber={whatsappNumber}
+                onReturnToMenu={handleReturnToMenu}
+            />
+        )
+    }
+
+    if (isCheckoutVisible) {
+        return (
+            <CheckoutContainer
+                tenantSlug={tenantSlug}
+                cart={cart}
+                accessToken={accessToken}
+                clearCart={clearCart}
+                onOrderPlaced={handleOrderPlaced}
+            />
+        )
+    }
 
     return (
         <main data-testid="menu-experience" className={styles.menuExperience}>

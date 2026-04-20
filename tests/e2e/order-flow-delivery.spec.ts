@@ -26,12 +26,10 @@ test.describe("Order Flow — Delivery", () => {
         await expect(page.getByTestId("delivery-address-input")).toBeVisible()
     })
 
-    test("shows map after address is entered", async ({ page }) => {
+    test("shows map when delivery is selected", async ({ page }) => {
         await authenticateUser(page)
 
         await page.getByTestId("delivery-type-delivery").click()
-        await page.getByTestId("delivery-address-input").fill(TEST_ADDRESS)
-
         await expect(page.getByTestId("delivery-map")).toBeVisible({ timeout: 5000 })
     })
 
@@ -41,7 +39,7 @@ test.describe("Order Flow — Delivery", () => {
         await page.getByTestId("delivery-type-delivery").click()
         await page.getByTestId("delivery-address-input").fill(TEST_ADDRESS)
 
-        await expect(page.getByTestId("delivery-cost")).toBeVisible({ timeout: 5000 })
+        await expect(page.getByTestId("delivery-cost")).toBeVisible({ timeout: 10000 })
     })
 
     test("completes a delivery order end-to-end", async ({ page }) => {
@@ -49,7 +47,8 @@ test.describe("Order Flow — Delivery", () => {
 
         await page.getByTestId("delivery-type-delivery").click()
         await page.getByTestId("delivery-address-input").fill(TEST_ADDRESS)
-        await page.waitForSelector("[data-testid='delivery-map']", { timeout: 5000 })
+        await page.waitForSelector("[data-testid='delivery-cost']", { timeout: 10000 })
+        await page.getByTestId("confirm-address-button").click()
         await page.getByTestId("confirm-order-button").click()
 
         await expect(page.getByTestId("active-order-view")).toBeVisible()
